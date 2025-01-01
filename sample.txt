@@ -1,0 +1,181 @@
+Here's a step-by-step guide on how to use MySQL in an Express.js application:
+
+Installing Required Packages
+First, install the required packages:
+
+```
+bash
+npm install express mysql2
+```
+
+Setting Up the MySQL Database
+Create a new MySQL database and add a user with privileges to access the database. You can do this using the MySQL command-line tool or a graphical user interface like phpMyAdmin.
+
+Configuring the MySQL Connection
+Create a new file called `db.js` and add the following code:
+
+```
+const mysql = require('mysql2/promise');
+
+const dbConfig = {
+  host: 'localhost',
+  user: 'your_username',
+  password: 'your_password',
+  database: 'your_database',
+};
+
+const db = mysql.createPool(dbConfig);
+
+module.exports = db;
+```
+
+Creating a Model
+Create a new file called `user.model.js` and add the following code:
+
+```
+const db = require('./db');
+
+class User {
+  async getAllUsers() {
+    const [users] = await db.execute('SELECT * FROM users');
+    return users;
+  }
+
+  async getUserById(id) {
+    const [user] = await db.execute('SELECT * FROM users WHERE id = ?', [id]);
+    return user[0];
+  }
+
+  async createUser(name, email) {
+    const [result] = await db.execute('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
+    return result.insertId;
+  }
+
+  async updateUser(id, name, email) {
+    const [result] = await db.execute('UPDATE users SET name = ?, email = ? WHERE id = ?', [name, email, id]);
+    return result.affectedRows;
+  }
+
+  async deleteUser(id) {
+    const [result] = await db.execute('DELETE FROM users WHERE id = ?', [id]);
+    return result.affectedRows;
+  }
+}
+
+module.exports = User;
+```
+
+Creating an Express Route
+Create a new file called `user.route.js` and add the following code:
+
+```
+const express = require('express');
+const router = express.Router();
+const User = require('./user.model');
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.getAllUsers();
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching users' });
+  }
+});
+
+router.get('/users/:id', async (req, res) => {
+  try {
+    const id = (link unavailable);
+    const user = await User.getUserById(id);
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      res.json(user);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching user' });
+  }
+});
+
+router.post('/users', async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const id = await User.createUser(name, email);
+    res.json({ message: `User created with ID ${id}` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error creating user' });
+  }
+});
+
+router.put('/users/:id', async (req, res) => {
+  try {
+    const id = (link unavailable);
+    const { name, email } = req.body;
+    const affectedRows = await User.updateUser(id, name, email);
+    if (affectedRows === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      res.json({ message: 'User updated successfully' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating user' });
+  }
+});
+
+router.delete('/users/:id', async (req, res) => {
+  try {
+    const id = (link unavailable);
+    const affectedRows = await User.deleteUser(id);
+    if (affectedRows === 0) {
+      res.status(404).json({ message: 'User not found' });
+    } else {
+      res.json({ message: 'User deleted successfully' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+});
+
+module.exports = router;
+```
+
+Using the Route in the Express App
+Create a new file called `app.js` and add the following code:
+
+```
+const express = require('express');
+const app = express();
+const userRoute = require('./user.route');
+
+app.use(express.json());
+app.use('/api', userRoute);
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
+```
+
+CREATE TABLE users (
+  Id INT AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  app_id VARCHAR(255) DEFAULT NULL,
+  web_link VARCHAR(255) DEFAULT NULL,
+  uuid VARCHAR(50) DEFAULT NULL,
+  acct_verified VARCHAR(10) NOT NULL,
+  date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (Id)
+)
+
+1,Error: Mail command failed: 530-5.7.0 Authentication Required. For more information, go to
+530 5.7.0  https://support.google.com/mail/?p=WantAuthError 4fb4d7f45d1cf-5d80675a41esm16591658a12.1 - gsmtp
+
+2, Error: getaddrinfo ENOTFOUND smtp.gmail.com
+
+3, Error: Client network socket disconnected before secure TLS connection was established

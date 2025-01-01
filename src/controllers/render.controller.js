@@ -1,0 +1,33 @@
+const renderSignup = (req, res, next) => {
+  res.render('signup')
+}
+
+const signupFail = (req, res, next) => {
+  res.render('signupfail')
+}
+const error500 = (req, res, next) => {
+  let from = req.query.from
+  res.render('error500', {from})
+}
+
+const emailSent = (req, res, next) => {
+  res.render('emailSent')
+}
+
+const authfail = (req, res, next) => {
+  res.render('uuid')
+}
+
+const renderLogin = (req, res, next) => {
+  res.render('login')
+}
+
+
+module.exports = {
+  renderSignup,
+  signupFail,
+  emailSent,
+  renderLogin,
+  error500,
+  authfail
+}
