@@ -1,5 +1,5 @@
 
-const uid = require('../utils/uniqueId')
+const generate = require('../utils/generate')
 const { authMail } = require('../models/api.model')
 
 const recieveEmail = (req, res, next) => {
@@ -13,12 +13,12 @@ const recieveEmail = (req, res, next) => {
     return res.status(400).json({message: 'this email address is invalid'})
   }
   
+  let uuid = generate.uuid()
   let data = {
     ip: req.ip,
     timestamp: Date.now(),
-    uid: uid(),
+    uuid,
     email: req.query.emailaddress,
-    //otp: generateOtp(),
     res
   }
   

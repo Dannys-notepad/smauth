@@ -1,9 +1,7 @@
-const uuid = require('uuid')
-
 const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
 const mailer = require('../services/mailer')
-const generateUid = require('../utils/uniqueId')
+const generate = require('../utils/generate')
 
 
 const processSignup = async (req, res, next) => {
@@ -13,12 +11,12 @@ const processSignup = async (req, res, next) => {
   }
   
   let { name, email, password} = await req.body
-  let verificationToken = uuid.v4()
+  let uuid = generate.uuid()
   let data =  {
     name,
     email,
     password: btoa(password),
-    verificationToken,
+    uuid,
     acct_verified: 'false'
   }
   
@@ -27,14 +25,9 @@ const processSignup = async (req, res, next) => {
     const Users = new User()
     user = await Users.getUserByEmail(data.email)
     if (!user) {
-      let mail = await mailer(data.verificationToken, data.email)
-      
-      if(mail.toString() === 'Error: getaddrinfo ENOTFOUND smtp.gmail.com' || mail.toString() === 'Error: Client network socket disconnected before secure TLS connection was established'){
-        return res.redirect('/error500?from=signup')
-      }
-      console.log(mail)
       user = await Users.createUser(data)
       return res.redirect('/mailsent')
+      //return res.redirect('/error500?from=signup')
     }
     return res.redirect('/login')
   } catch (err) {
