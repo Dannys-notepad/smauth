@@ -22,6 +22,18 @@ const renderLogin = (req, res, next) => {
   res.render('login')
 }
 
+const doesNotExist= (req, res, next) => {
+  res.render('notexists')
+}
+
+const wrongPass= (req, res, next) => {
+  res.render('wrongpassword')
+}
+
+const notVerified= (req, res, next) => {
+  res.render('notverified')
+}
+
 
 module.exports = {
   renderSignup,
@@ -29,5 +41,8 @@ module.exports = {
   emailSent,
   renderLogin,
   error500,
-  authfail
+  authfail,
+  doesNotExist,
+  wrongPass,
+  notVerified
 }

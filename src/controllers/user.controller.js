@@ -52,7 +52,29 @@ const oauth = async (req, res, next) => {
   }
 }
 
+const processLogin = async  (req, res, next) => {
+  let { email, password } = await req.body
+  
+  try {
+    let user 
+    const Users = new User()
+    user = await Users.getUserByEmail(email)
+    if(!user){
+      return res.redirect('/usernotfound')
+    }
+    if(atob(user.password) !== password){
+      return res.redirect('/wrongpassword')
+    }
+    if(user.acct_verified === 'false'){
+      return res.redirect('/notverified')
+    }
+  } catch (e) {
+    return res.status(500).json({message: 'error fetching user'})
+  }
+}
+
 module.exports = {
   processSignup,
-  oauth
+  oauth,
+  processLogin
 }
