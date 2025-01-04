@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
 const mailer = require('../services/mailer')
+//const sendMail = require('../utils/sendMail')
 const generate = require('../utils/generate')
 
 
@@ -19,6 +20,30 @@ const processSignup = async (req, res, next) => {
     uuid,
     acct_verified: 'false'
   }
+  let smptConfig = {
+    user: process.env.SMTP_USER,
+    appPassword: process.env.SMTP_PASS,
+    subject: 'SMAuth',
+    recipientsEmail: data.email
+  }
+  let mailgenConfig = {
+    //theme: 'default',
+    projectName: 'SMAuth',
+    indexLink: 'http://localhost:5000'
+  }
+  let mailTemplate = {
+    heading: 'Authentication Mail',
+    introText: 'this is your authentication mail',
+    action: {
+      instruction: 'click the button to verify your account',
+      button:{
+        //color: '',
+        text: 'click me to verify',
+        link: 'http://localhost:5000/api/v1/auth?confirm='+data.uuid
+      }
+    },
+    outroText: ''
+  }
   
   try {
     let user
@@ -26,8 +51,16 @@ const processSignup = async (req, res, next) => {
     user = await Users.getUserByEmail(data.email)
     if (!user) {
       user = await Users.createUser(data)
-      return res.redirect('/mailsent')
-      //return res.redirect('/error500?from=signup')
+      try {
+        const mail = await mailer(smptConfig, mailgenConfig, mailTemplate)
+        if(mail){
+          return res.redirect('/mailsent')
+        }
+      } catch (e) {
+        console.log(e.toString())
+        return res.status(500).json({e})
+      }
+      return res.redirect('/login')
     }
     return res.redirect('/login')
   } catch (err) {
@@ -51,6 +84,7 @@ const oauth = async (req, res, next) => {
     return res.redirect('/error500?from=login')
   }
 }
+
 
 const processLogin = async  (req, res, next) => {
   let { email, password } = await req.body

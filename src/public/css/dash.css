@@ -1,0 +1,100 @@
+*{
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: Arial, Verenda, sans-serif
+			}
+			body{
+			  background-color: #ecf6fa8c;
+			}
+			header{
+				background-color: #333;
+				font-family: arial;
+				margin-bottom: 10px;
+				padding: 30px;
+				color: white;
+				display: flex;
+				align-content: space-between;
+				align-items: space-between;	
+			}
+			img{
+				border-radius: 300px;
+				margin-left: auto;
+				width: 50px;
+			}
+			
+			main{
+				padding: 40px;
+			}
+			section{
+				margin-bottom: 25px;
+				
+				
+			}
+			span{
+				margin: auto;
+			}
+			.user-icon{
+				font-size: 30px;
+				border: 2px solid #fff;
+				font-weight: bold;
+				margin: auto;
+				border-radius: 10px;
+				padding: 10px;
+			}
+			.user-info{
+				box-shadow: 5px 5px 10px 1px rgba(0.3, 0, 0, 0.3);
+				background-color: #333;
+				color: #fff;
+				padding: 20px;
+				border-radius: 5px;
+				text-align: center;
+			}
+			.quiz-options{
+				margin-top: 20px;
+				text-align: center;
+				
+			}
+			.box-holder{
+				display: flex;
+				align-content: center;
+				align-items: center;
+			}
+			button{
+				box-shadow: 5px 5px 10px 1px rgba(0.3, 0, 0, 0.3);
+				background-color: #333;
+				color: #fff;
+				padding: 20px;
+				border-radius: 10px;
+				text-align: center;
+				cursor: pointer;
+				border: none;
+				margin: 20px;
+			}
+			.box > p{
+				margin: 20px;
+			}
+			.quiz-options > h3, .box > p{
+				font-size: 30px;
+				font-weight: bold;
+			}
+			.boxx{
+			  box-shadow: 5px 5px 10px 1px rgba(0.3, 0, 0, 0.3);
+
+				background-color: #fff;
+
+				color: #333;
+				padding: 20px;
+				border-radius: 10px;
+				text-align: center;
+				border: none;
+				margin: 20px;
+				font-size: 21px;
+				font-family: Courier New;
+				font-weight: 600;
+			}
+			@media(max-width: 900px){
+				.box-holder{
+					display: inline;
+				}
+			}
