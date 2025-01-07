@@ -1,7 +1,6 @@
-const mysql = require('mysql')
+
 const mailer = require('../services/mailer')
-const save = require('../utils/writeData')
-const DB = require('../data/data.json')
+
 
 class authMail{
   constructor(data){

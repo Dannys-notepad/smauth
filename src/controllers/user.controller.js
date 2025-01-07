@@ -39,7 +39,7 @@ const processSignup = async (req, res, next) => {
       button:{
         //color: '',
         text: 'click me to verify',
-        link: 'http://localhost:5000/api/v1/auth?confirm='+data.uuid
+        link: 'http://localhost:5000/auth?uuid='+data.uuid
       }
     },
     outroText: ''
@@ -64,8 +64,8 @@ const processSignup = async (req, res, next) => {
     }
     return res.redirect('/login')
   } catch (err) {
-    console.error(err);
-    //return res.status(500).json({ message: err });
+    console.error(err)
+    return res.status(500).json({ message: err });
   }
 }
 
@@ -74,11 +74,25 @@ const oauth = async (req, res, next) => {
   try {
     let user
     const Users = new User()
-    user = await User.getUserByUuid(uuid)
+    user = await Users.getUserByUuid(uuid)
     if(user){
+      if(user.acct_verified === 'true'){
+        return res.redirect('/login')
+      }
+      user.acct_verified = 'true'
+      user.uuid = 'null'
+      let data = {
+        Id: user.Id,
+        verified: user.acct_verified,
+        uuid: user.uuid
+      }
+      const update = await Users.updateUser1(data)
+      console.log(user)
       return res.redirect('/login')
+    } else {
+      return res.redirect('/authfailed')
     }
-    return res.redirect('/authfailed')
+    
   } catch (e) {
     console.error(e)
     return res.redirect('/error500?from=login')
@@ -96,12 +110,16 @@ const processLogin = async  (req, res, next) => {
     if(!user){
       return res.redirect('/usernotfound')
     }
+    if(user.acct_verified !== 'true'){
+      return res.redirect('/notverified')
+    }
     if(atob(user.password) !== password){
       return res.redirect('/wrongpassword')
     }
-    if(user.acct_verified === 'false'){
-      return res.redirect('/notverified')
+    req.session.user = {
+      user: user.email
     }
+    return res.redirect('/dashboard')
   } catch (e) {
     return res.status(500).json({message: 'error fetching user'})
   }

@@ -21,8 +21,8 @@ class User{
     return result.insertId;
   }
 
-  async updateUser(data) {
-    const [result] = await db.execute('UPDATE users SET app_id = ?, web_link = ? WHERE email = ?', [data.app_id, data.email, data.web_link]);
+  async updateUser1(data) {
+    const [result] = await db.execute('UPDATE users SET acct_verified = ?, uuid = ? WHERE Id = ?', [data.verified, data.uuid, data.Id]);
     return result.affectedRows;
   }
 

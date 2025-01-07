@@ -34,6 +34,13 @@ const notVerified= (req, res, next) => {
   res.render('notverified')
 }
 
+const dashboard= (req, res, next) => {
+  if(!req.session.user){
+    return res.redirect('/login')
+  }
+  res.render('dashboard')
+}
+
 
 module.exports = {
   renderSignup,
@@ -44,5 +51,6 @@ module.exports = {
   authfail,
   doesNotExist,
   wrongPass,
-  notVerified
+  notVerified,
+  dashboard
 }

@@ -1,4 +1,4 @@
-const db = require('../data/data.json')
+/*const db = require('../data/data.json')
 
 const limitRate = (req, res, next) => {
   let ip = req.ip
@@ -9,4 +9,4 @@ const limitRate = (req, res, next) => {
   next()
 }
 
-module.exports = limitRate
+module.exports = limitRate*/
