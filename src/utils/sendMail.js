@@ -20,7 +20,7 @@ const sendMail = async (email, uuid) => {
       button:{
         //color: '',
         text: 'click me to verify',
-        link: 'http://localhost:5000/api/v1/auth?confirm='+uuid
+        link: 'http://localhost:5000/auth?uuid='+uuid
       }
     },
     outroText: ''

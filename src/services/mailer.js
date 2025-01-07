@@ -2,13 +2,13 @@ const nodemailer = require('nodemailer');
 const Mailgen = require('mailgen');
 
 
-const mailerjs = async (smptConfig, mailgenConfig, mailTemplate) => {
+const mailerjs = async (smtpConfig, mailgenConfig, mailTemplate) => {
   
-  if(typeof smptConfig === 'undefined' || typeof mailgenConfig === 'undefined' || typeof mailTemplate === 'undefined'){
+  if(typeof smtpConfig === 'undefined' || typeof mailgenConfig === 'undefined' || typeof mailTemplate === 'undefined'){
     throw new Error('A parameter was left blank');
   }
   
-  if(typeof smptConfig !== 'object' || typeof mailgenConfig !== 'object' || typeof mailTemplate !== 'object'){
+  if(typeof smtpConfig !== 'object' || typeof mailgenConfig !== 'object' || typeof mailTemplate !== 'object'){
     throw new Error('All parameter values must be an object');
   }
   
@@ -25,8 +25,8 @@ const mailerjs = async (smptConfig, mailgenConfig, mailTemplate) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: smptConfig.user,
-      pass: smptConfig.appPassword,
+      user: smtpConfig.user,
+      pass: smtpConfig.appPassword,
       authMethod: "PLAIN"
     },
     pool: true,
@@ -54,9 +54,9 @@ const mailerjs = async (smptConfig, mailgenConfig, mailTemplate) => {
     // Sends email
     try {
       const info = await transporter.sendMail({
-      from: smptConfig.user,
-      to: smptConfig.recipientsEmail,
-      subject: smptConfig.subject,
+      from: smtpConfig.user,
+      to: smtpConfig.recipientsEmail,
+      subject: smtpConfig.subject,
       html: emailBody
     });
     return true 

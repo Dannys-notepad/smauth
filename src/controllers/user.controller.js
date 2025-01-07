@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
 const mailer = require('../services/mailer')
-//const sendMail = require('../utils/sendMail')
+const sendMail = require('../utils/sendMail')
 const generate = require('../utils/generate')
 
 
@@ -18,7 +18,8 @@ const processSignup = async (req, res, next) => {
     email,
     password: btoa(password),
     uuid,
-    acct_verified: 'false'
+    acct_verified: 'false',
+    time_stamp_created: Date.now()
   }
   let smptConfig = {
     user: process.env.SMTP_USER,
@@ -42,7 +43,7 @@ const processSignup = async (req, res, next) => {
         link: 'http://localhost:5000/auth?uuid='+data.uuid
       }
     },
-    outroText: ''
+    outroText: 'This mail expires in 2mins'
   }
   
   try {
@@ -111,7 +112,11 @@ const processLogin = async  (req, res, next) => {
       return res.redirect('/usernotfound')
     }
     if(user.acct_verified !== 'true'){
-      return res.redirect('/notverified')
+      const sent = await sendMail(email, user.uuid)
+      if(sent){
+        return res.redirect('/notverified')
+      }
+      return res.redirect('/error500?from=login')
     }
     if(atob(user.password) !== password){
       return res.redirect('/wrongpassword')

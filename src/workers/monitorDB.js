@@ -5,6 +5,14 @@ const cron = require('node-cron');
 const dbFilePath = path.join(__dirname, 'data.json');
 const twoMinutes = 2 * 60 * 1000; // 2 minutes in milliseconds
 
+
+const calculateSeconds = (lastTimestamp) => {
+  let currentTimestamp = Date.now();
+  let seconds = Math.floor((currentTimestamp - lastTimestamp) / 1000);
+  lastTimestamp = currentTimestamp;
+  return seconds;
+}
+
 function monitorDbFile() {
   fs.readFile(dbFilePath, 'utf8', (err, data) => {
     if (err) {
