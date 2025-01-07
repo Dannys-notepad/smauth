@@ -6,7 +6,6 @@ const path = require('path')
 const cookieParser = require("cookie-parser")
 const sessions = require('express-session')
 const port = process.env.PORT || 5000
-const apiRoutes = require('./src/routes/api.route')
 const userRoutes = require('./src/routes/user.route')
 const errorHandler = require('./src/middlewares/errorHandler')
 
@@ -27,7 +26,6 @@ app.use(express.static(path.join(__dirname, 'src/public')));
 
 
 app.use('/', userRoutes)
-app.use('/api/v1', apiRoutes)
 
 
 app.get('/', (req, res) => {
