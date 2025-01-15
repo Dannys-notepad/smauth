@@ -178,3 +178,21 @@ CREATE TABLE users (
 2, Error: getaddrinfo ENOTFOUND smtp.gmail.com
 
 3, Error: Client network socket disconnected before secure TLS connection was established
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  d_date VARCHAR(50) NOT NULL,
+  date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (Id)
+)
+
+CREATE TABLE reminder (
+  id INT AUTO_INCREMENT,
+  email VARCHAR(100) NOT NULL,
+  title VARCHAR(100) NOT NULL,
+  ddate VARCHAR(30) NOT NULL,
+  date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (Id)
+)

@@ -5,10 +5,10 @@ const dbPassword = process.env.DB_PASSWORD
 const dbDatabase = process.env.DB_DATABASE
 
 const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: 'root',
-  database: 'SMAuth'
+  dbHost,
+  dbUser,
+  dbPassword,
+  dbDatabase
 }
 
 const db = mysql.createPool(dbConfig)
