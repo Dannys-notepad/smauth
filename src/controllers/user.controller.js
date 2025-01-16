@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
 const mailer = require('../services/mailer')
 const sendMail = require('../utils/sendMail')
+const pixmail = require('pixmail')
 const generate = require('../utils/generate')
 
 
@@ -21,29 +22,17 @@ const processSignup = async (req, res, next) => {
     acct_verified: 'false',
     time_stamp_created: Date.now()
   }
-  let smptConfig = {
+  
+  let configData = {
     user: process.env.SMTP_USER,
-    appPassword: process.env.SMTP_PASS,
-    subject: 'SMAuth',
-    recipientsEmail: data.email
-  }
-  let mailgenConfig = {
-    //theme: 'default',
-    projectName: 'SMAuth',
-    indexLink: 'http://localhost:5000'
-  }
-  let mailTemplate = {
-    heading: 'Authentication Mail',
-    introText: 'this is your authentication mail',
-    action: {
-      instruction: 'click the button to verify your account',
-      button:{
-        //color: '',
-        text: 'click me to verify',
-        link: 'http://localhost:5000/auth?uuid='+data.uuid
-      }
-    },
-    outroText: 'This mail expires in 2mins'
+    pass: process.env.SMTP_PASS,
+    recipientEmail: data.email,
+    subject: 'Account verification email',
+    bodyType: 'html',
+    body: `
+    <h3>Hello There, please verify your account</h3>
+    <p><a href="http://localhost:5000/auth?uuid=${data.uuid}"><b>verify account</b></a></p>
+    `
   }
   
   try {
@@ -53,7 +42,8 @@ const processSignup = async (req, res, next) => {
     if (!user) {
       user = await Users.createUser(data)
       try {
-        const mail = await mailer(smptConfig, mailgenConfig, mailTemplate)
+        //const mail = await mailer(smptConfig, mailgenConfig, mailTemplate)
+        const mail = await pixmail(configData)
         if(mail){
           return res.redirect('/mailsent')
         }

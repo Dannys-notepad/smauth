@@ -17,7 +17,7 @@ class User{
   }
 
   async createUser(data) {
-    const [result] = await db.execute('INSERT INTO users (name, email, password, uuid, acct_verified) VALUES (?, ?, ?, ?, ?)', [data.name, data.email, data.password, data.uuid, data.acct_verified]);
+    const [result] = await db.execute('INSERT INTO users (name, email, password, uuid, acct_verified, time_stamp_created) VALUES (?, ?, ?, ?, ?, ?)', [data.name, data.email, data.password, data.uuid, data.acct_verified, data.time_stamp_created]);
     return result.insertId;
   }
 
