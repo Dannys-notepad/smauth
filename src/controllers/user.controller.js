@@ -1,6 +1,10 @@
 const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
 const pixmail = require('pixmail')
+pixmail.setup({
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  })
 const generate = require('../utils/generate')
 
 
@@ -21,17 +25,16 @@ const processSignup = async (req, res, next) => {
     time_stamp_created: Date.now()
   }
   
-  let configData = {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-    recipientEmail: data.email,
-    subject: 'Account verification email',
-    //bodyType: 'html',
-    body: `
-    <h3>Hello There, please verify your account</h3>
-    <p><a href="http://localhost:5000/auth?uuid=${data.uuid}"><b>verify account</b></a></p>
-    `
-  }
+  
+  const emailHtml = pixmail.generateTemplate('withButton', {
+    recipientName: data.email,
+    topic: 'Your Account Verification',
+    action: 'This is your account verification email',
+    linkUrl: `${req.protocol}://${req.hostname}/auth?uuid=${data.uuid}`,
+    yourName: 'smauth'
+  })
+  
+  
   
   try {
     let user
@@ -40,21 +43,27 @@ const processSignup = async (req, res, next) => {
     if (!user) {
       user = await Users.createUser(data)
       try {
-        //const mail = await mailer(smptConfig, mailgenConfig, mailTemplate)
-        const mail = await pixmail(configData)
-        if(mail){
+        const sent = await pixmail.sendMail({
+          from: process.env.SMTP_USER,
+          to: data.email,
+          subject: 'Account Verification',
+          bodyType: 'html',
+          body: emailHtml
+        })
+  
+        if(sent){
           return res.redirect('/mailsent')
         }
       } catch (e) {
         console.log(e.toString())
-        return res.status(500).json({e})
+        return res.status(500).json({nsg: 'An error occurred, try again later'})
       }
       return res.redirect('/login')
     }
     return res.redirect('/login')
   } catch (err) {
     console.error(err)
-    return res.status(500).json({ message: err });
+    return res.status(500).json({ message: 'An error occurred , try again later'});
   }
 }
 
@@ -76,7 +85,7 @@ const oauth = async (req, res, next) => {
         uuid: user.uuid
       }
       const update = await Users.updateUser1(data)
-      console.log(user)
+      //console.log(user)
       return res.redirect('/login')
     } else {
       return res.redirect('/authfailed')
@@ -100,7 +109,20 @@ const processLogin = async  (req, res, next) => {
       return res.redirect('/usernotfound')
     }
     if(user.acct_verified !== 'true'){
-      const sent = await sendMail(email, user.uuid)
+      const emailHtml = pixmail.generateTemplate('withButton', {
+        recipientName: user.email,
+        topic: 'Your Account Verification',
+        action: 'This is your account verification email',
+        linkUrl: `${req.protocol}://${req.hostname}/auth?uuid=${user.uuid}`,
+        yourName: 'smauth'
+      })
+      const sent = await pixmail.sendMail({
+          from: process.env.SMTP_USER,
+          to: data.email,
+          subject: 'Account Verification',
+          bodyType: 'html',
+          body: emailHtml
+        })
       if(sent){
         return res.redirect('/notverified')
       }

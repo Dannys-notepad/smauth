@@ -1,4 +1,5 @@
 const renderSignup = (req, res, next) => {
+  //console.log(`${req.protocol}://${req.hostname}${req.url}`)
   res.render('signup')
 }
 
