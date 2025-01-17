@@ -29,7 +29,7 @@ app.use('/', userRoutes)
 
 
 app.get('/', (req, res) => {
-  res.json({message: 'Authentication Mail'})
+  res.redirect('/signup')
 })
 
 app.listen(port, () => console.log(`Server up and running on port ${port}`))
