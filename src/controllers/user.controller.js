@@ -1,7 +1,5 @@
 const { validationResult } = require('express-validator')
 const { User } = require('../models/user.model')
-const mailer = require('../services/mailer')
-const sendMail = require('../utils/sendMail')
 const pixmail = require('pixmail')
 const generate = require('../utils/generate')
 
@@ -28,7 +26,7 @@ const processSignup = async (req, res, next) => {
     pass: process.env.SMTP_PASS,
     recipientEmail: data.email,
     subject: 'Account verification email',
-    bodyType: 'html',
+    //bodyType: 'html',
     body: `
     <h3>Hello There, please verify your account</h3>
     <p><a href="http://localhost:5000/auth?uuid=${data.uuid}"><b>verify account</b></a></p>
